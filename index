@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محلل الروابط الداخلية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #e94560;
+            --light-color: #f5f5f5;
+            --dark-color: #0f0f1e;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --info-color: #2196f3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            line-height: 1.6;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-left: 15px;
+        }
+
+        .site-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--light-color);
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: #ccc;
+            margin-top: 5px;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--light-color);
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: #ddd;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: var(--primary-color);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .card h2 i {
+            margin-left: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--accent-color);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(233, 69, 96, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 48px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #d63447;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .sitemap-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sitemap-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .sitemap-option:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sitemap-option input {
+            margin-left: 10px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tag i {
+            margin-left: 5px;
+            color: var(--accent-color);
+        }
+
+        .results-container {
+            background: var(--primary-color);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+        }
+
+        .results-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .results-container h2 i {
+            margin-left: 10px;
+        }
+
+        .result-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--light-color);
+        }
+
+        .result-item p {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .result-item a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .result-item a i {
+            margin-left: 5px;
+        }
+
+        .result-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .relevance-score {
+            display: flex;
+            align-items: center;
+        }
+
+        .score-bar {
+            width: 100px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-left: 8px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background-color: var(--accent-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--accent-color);
+            animation: spin 2s infinite linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            padding: 30px 0;
+            text-align: center;
+            color: #ccc;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .social-links a {
+            color: var(--light-color);
+            margin: 0 10px;
+            font-size: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .sitemap-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="https://z-cdn-media.chatglm.cn/files/1274452a-e1a2-4e38-b276-d2b66a7046dd_logo-512%20%281%29.png?auth_key=1862853683-49157c874d094a329662d43150897e6a-0-55f61d3ffdf3e8b17efabe9ac513f41d" alt="Logo" class="logo">
+                    <div>
+                        <h1 class="site-title">محلل الروابط الداخلية</h1>
+                        <p class="tagline">أداة ذكية لاقتراح روابط داخلية لمقالاتك</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>اكتشف أفضل الروابط الداخلية لمقالاتك</h1>
+            <p>استخدم أداتنا المتقدمة للبحث في خرائط الموقع واقتراح روابط داخلية مناسبة بناءً على محتوى مقالك والتصنيفات ذات الصلة</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="card">
+                <h2><i class="fas fa-file-upload"></i>رفع المقال</h2>
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>اسحب وأفلت المقال هنا أو انقر للاختيار</p>
+                    <button class="btn">اختيار ملف</button>
+                </div>
+                <input type="file" id="file-input" class="file-input" accept=".txt,.doc,.docx,.pdf">
+                <div id="file-info" style="display: none; margin-top: 15px;">
+                    <p><strong>الملف المحدد:</strong> <span id="file-name"></span></p>
+                    <p><strong>الحجم:</strong> <span id="file-size"></span></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-sitemap"></i>اختيار خريطة الموقع</h2>
+                <div class="sitemap-options">
+                    <div class="sitemap-option">
+                        <input type="checkbox" id="sitemap1" checked>
+                        <label for="sitemap1">المقالات 1</label>
+                    </div>
+                    <div class="sitemap-option">
+                        <input type="checkbox" id="sitemap2" checked>
+                        <label for="sitemap2">المقالات 2</label>
+                    </div>
+                    <div class="sitemap-option">
+                        <input type="checkbox" id="sitemap3">
+                        <label for="sitemap3">المقالات 3</label>
+                    </div>
+                    <div class="sitemap-option">
+                        <input type="checkbox" id="sitemap4">
+                        <label for="sitemap4">المقالات 4</label>
+                    </div>
+                    <div class="sitemap-option">
+                        <input type="checkbox" id="sitemap5">
+                        <label for="sitemap5">المقالات 5</label>
+                    </div>
+                    <div class="sitemap-option">
+                        <input type="checkbox" id="sitemap-news">
+                        <label for="sitemap-news">الأخبار</label>
+                    </div>
+                    <div class="sitemap-option">
+                        <input type="checkbox" id="sitemap-main" checked>
+                        <label for="sitemap-main">الرئيسية</label>
+                    </div>
+                </div>
+                <button class="btn btn-full" id="analyze-btn">تحليل المقال واقتراح الروابط</button>
+            </div>
+        </div>
+
+        <div class="results-container">
+            <h2><i class="fas fa-link"></i>الروابط المقترحة</h2>
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner"></i>
+                <p>جاري تحليل المقال واقتراح الروابط المناسبة...</p>
+            </div>
+            <div class="empty-state" id="empty-state">
+                <i class="fas fa-search"></i>
+                <p>قم برفع مقال واختيار خرائط الموقع لعرض الروابط المقترحة</p>
+            </div>
+            <div id="results"></div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-tags"></i>التصنيفات الشائعة</h2>
+            <div class="tags-container">
+                <span class="tag"><i class="fas fa-tag"></i>Amazon</span>
+                <span class="tag"><i class="fas fa-tag"></i>Google</span>
+                <span class="tag"><i class="fas fa-tag"></i>Microsoft</span>
+                <span class="tag"><i class="fas fa-tag"></i>ChatGPT</span>
+                <span class="tag"><i class="fas fa-tag"></i>OpenAI</span>
+                <span class="tag"><i class="fas fa-tag"></i>Windows</span>
+                <span class="tag"><i class="fas fa-tag"></i>Android</span>
+                <span class="tag"><i class="fas fa-tag"></i>YouTube</span>
+                <span class="tag"><i class="fas fa-tag"></i>Facebook</span>
+                <span class="tag"><i class="fas fa-tag"></i>Twitter</span>
+                <span class="tag"><i class="fas fa-tag"></i>Instagram</span>
+                <span class="tag"><i class="fas fa-tag"></i>TikTok</span>
+                <span class="tag"><i class="fas fa-tag"></i>Reddit</span>
+                <span class="tag"><i class="fas fa-tag"></i>LinkedIn</span>
+                <span class="tag"><i class="fas fa-tag"></i>Nvidia</span>
+                <span class="tag"><i class="fas fa-tag"></i>AMD</span>
+                <span class="tag"><i class="fas fa-tag"></i>Intel</span>
+                <span class="tag"><i class="fas fa-tag"></i>Nintendo</span>
+                <span class="tag"><i class="fas fa-tag"></i>Xbox</span>
+                <span class="tag"><i class="fas fa-tag"></i>Battlefield</span>
+                <span class="tag"><i class="fas fa-tag"></i>Stock Market</span>
+                <span class="tag"><i class="fas fa-tag"></i>VPN</span>
+                <span class="tag"><i class="fas fa-tag"></i>Nobel Prize</span>
+                <span class="tag"><i class="fas fa-tag"></i>Donald Trump</span>
+                <span class="tag"><i class="fas fa-tag"></i>Barack Obama</span>
+                <span class="tag"><i class="fas fa-tag"></i>Philadelphia Eagles</span>
+                <span class="tag"><i class="fas fa-tag"></i>New York Giants</span>
+                <span class="tag"><i class="fas fa-tag"></i>Thursday Night Football</span>
+                <span class="tag"><i class="fas fa-tag"></i>Jaxson Dart</span>
+                <span class="tag"><i class="fas fa-tag"></i>Cam Skattebo</span>
+                <span class="tag"><i class="fas fa-tag"></i>Jalen Hurts</span>
+                <span class="tag"><i class="fas fa-tag"></i>Brian Burns</span>
+                <span class="tag"><i class="fas fa-tag"></i>Abdul Carter</span>
+                <span class="tag"><i class="fas fa-tag"></i>Cooper DeJean</span>
+                <span class="tag"><i class="fas fa-tag"></i>Kayvon Thibodeaux</span>
+                <span class="tag"><i class="fas fa-tag"></i>Ryan Fitzpatrick</span>
+                <span class="tag"><i class="fas fa-tag"></i>Dane Belton</span>
+                <span class="tag"><i class="fas fa-tag"></i>Nick Sirianni</span>
+                <span class="tag"><i class="fas fa-tag"></i>Columbus Day</span>
+                <span class="tag"><i class="fas fa-tag"></i>Bank Holiday</span>
+                <span class="tag"><i class="fas fa-tag"></i>María Corina Machado</span>
+                <span class="tag"><i class="fas fa-tag"></i>Venezuela</span>
+                <span class="tag"><i class="fas fa-tag"></i>Qatar Military Base</span>
+                <span class="tag"><i class="fas fa-tag"></i>Qatari Air Force</span>
+                <span class="tag"><i class="fas fa-tag"></i>Foreign Military Bases</span>
+                <span class="tag"><i class="fas fa-tag"></i>Explosion</span>
+                <span class="tag"><i class="fas fa-tag"></i>Explosives Manufacturer</span>
+                <span class="tag"><i class="fas fa-tag"></i>Munitions Plant</span>
+                <span class="tag"><i class="fas fa-tag"></i>Accurate Energetic Systems</span>
+                <span class="tag"><i class="fas fa-tag"></i>Idaho</span>
+                <span class="tag"><i class="fas fa-tag"></i>Tennessee</span>
+                <span class="tag"><i class="fas fa-tag"></i>Hickman County</span>
+                <span class="tag"><i class="fas fa-tag"></i>McEwen</span>
+                <span class="tag"><i class="fas fa-tag"></i>Bucksnort</span>
+                <span class="tag"><i class="fas fa-tag"></i>Wendy Osefo</span>
+                <span class="tag"><i class="fas fa-tag"></i>Eddie Osefo</span>
+                <span class="tag"><i class="fas fa-tag"></i>Real Housewives of Potomac</span>
+                <span class="tag"><i class="fas fa-tag"></i>Steven Cheung</span>
+                <span class="tag"><i class="fas fa-tag"></i>Claude</span>
+                <span class="tag"><i class="fas fa-tag"></i>Anthropic</span>
+                <span class="tag"><i class="fas fa-tag"></i>Perplexity</span>
+                <span class="tag"><i class="fas fa-tag"></i>Bluesky</span>
+                <span class="tag"><i class="fas fa-tag"></i>bing</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+                <p>&copy; 2023 محلل الروابط الداخلية. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const results = document.getElementById('results');
+
+            // Sample data for demonstration
+            const sampleResults = [
+                {
+                    title: "كيفية استخدام ChatGPT لتحسين كتابة المقالات",
+                    description: "دليل شامل حول كيفية الاستفادة من ChatGPT في تحسين جودة كتابة المقالات وزيادة الإنتاجية.",
+                    url: "https://faharas.net/chatgpt-writing-guide",
+                    category: "ChatGPT",
+                    relevance: 92
+                },
+                {
+                    title: "مقارنة بين ChatGPT و Claude: أيهما أفضل للمحتوى العربي؟",
+                    description: "مقارنة مفصلة بين أداتي الذكاء الاصطناعي ChatGPT و Claude من حيث قدراتهما على التعامل مع المحتوى العربي.",
+                    url: "https://faharas.net/chatgpt-vs-claude-arabic",
+                    category: "ChatGPT, Claude",
+                    relevance: 87
+                },
+                {
+                    title: "أحدث تحديثات OpenAI وتأثيرها على ChatGPT",
+                    description: "نستعرض أحدث التحديثات التي أطلقتها OpenAI ونناقش تأثيرها على أداء ChatGPT وقدراته الجديدة.",
+                    url: "https://faharas.net/openai-latest-updates",
+                    category: "OpenAI, ChatGPT",
+                    relevance: 85
+                },
+                {
+                    title: "تطبيقات الذكاء الاصطناعي في تحسين محركات البحث",
+                    description: "كيف يمكن للذكاء الاصطناعي أن يساعد في تحسين تصنيفات محركات البحث وزيادة حركة المرور إلى موقعك.",
+                    url: "https://faharas.net/ai-seo-applications",
+                    category: "AI, SEO",
+                    relevance: 78
+                },
+                {
+                    title: "مستقبل الذكاء الاصطناعي في صناعة المحتوى",
+                    description: "نظرة على مستقبل صناعة المحتوى مع تطور تكنولوجيا الذكاء الاصطناعي وتأثيرها على الكتاب والناشرين.",
+                    url: "https://faharas.net/future-of-ai-in-content",
+                    category: "AI, Content Creation",
+                    relevance: 75
+                }
+            ];
+
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    fileName.textContent = file.name;
+                    fileSize.textContent = formatFileSize(file.size);
+                    fileInfo.style.display = 'block';
+                }
+            });
+
+            analyzeBtn.addEventListener('click', function() {
+                if (!fileInput.files || !fileInput.files[0]) {
+                    alert('الرجاء اختيار ملف المقال أولاً');
+                    return;
+                }
+
+                // Show loading
+                loading.style.display = 'block';
+                emptyState.style.display = 'none';
+                results.innerHTML = '';
+
+                // Simulate API call with setTimeout
+                setTimeout(function() {
+                    loading.style.display = 'none';
+                    
+                    // Display results
+                    sampleResults.forEach(result => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'result-item';
+                        
+                        const relevancePercent = result.relevance;
+                        const scoreFillWidth = relevancePercent;
+                        
+                        resultItem.innerHTML = `
+                            <h3>${result.title}</h3>
+                            <p>${result.description}</p>
+                            <a href="${result.url}" target="_blank">عرض المقال <i class="fas fa-external-link-alt"></i></a>
+                            <div class="result-meta">
+                                <span>التصنيف: ${result.category}</span>
+                                <div class="relevance-score">
+                                    <span>الارتباط:</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: ${scoreFillWidth}%"></div>
+                                    </div>
+                                    <span>${relevancePercent}%</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        results.appendChild(resultItem);
+                    });
+                }, 2000);
+            });
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        });
+    </script>
+</body>
+</html>
